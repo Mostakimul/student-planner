@@ -1,13 +1,53 @@
-import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import Logo from '../../assets/images/logo-big.png';
-import TextInput from '../../components/form/TextInput';
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Logo from "../../assets/images/logo-big.png";
+import TextInput from "../../components/form/TextInput";
+import { selectUser } from "../../features/user/userSelectors";
+import { login } from "../../features/user/userSlice";
+import { auth } from "../../firebase/firebase.config";
 
 const Register = () => {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const [error, setError] = useState(false);
+  const navigate = useNavigate();
+  const user = useSelector(selectUser);
+
+  useEffect(() => {
+    if (user?.email && !error) {
+      navigate("/home");
+    }
+  }, [error, navigate, user?.email]);
 
   const onSubmit = (data) => {
-    console.log(data);
+    setError(false);
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+      .then((userAuth) => {
+        updateProfile(userAuth.user, {
+          displayName: data.name,
+        })
+          .then(
+            dispatch(
+              login({
+                email: userAuth.user.email,
+                uid: userAuth.user.uid,
+                displayName: data.name,
+              })
+            )
+          )
+          .catch((error) => {
+            setError(true);
+            toast.error("User not updated !");
+          });
+      })
+      .catch((error) => {
+        setError(true);
+        toast.error("User not created !");
+      });
   };
 
   return (
@@ -58,7 +98,7 @@ const Register = () => {
           </button>
         </form>
         <p className="mt-10">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link to="/" className="text-yellow-500">
             Login here
           </Link>
