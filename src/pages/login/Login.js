@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/logo-big.png';
 
 const Login = () => {
@@ -35,6 +36,12 @@ const Login = () => {
             Login
           </button>
         </form>
+        <p className="mt-10">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-yellow-500">
+            Create one
+          </Link>
+        </p>
       </div>
     </div>
   );
