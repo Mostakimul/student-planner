@@ -1,7 +1,7 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Navigate, useLocation } from "react-router-dom";
-import { selectUser } from "../features/user/userSelectors";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Navigate, useLocation } from 'react-router-dom';
+import { selectUser } from '../features/user/userSelectors';
 
 const PrivateRouter = ({ children }) => {
   const user = useSelector(selectUser);
