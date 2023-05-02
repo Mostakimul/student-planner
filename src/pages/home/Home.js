@@ -21,7 +21,7 @@ const Home = () => {
             Assignments
           </div>
           <div className="bg-gray-200 w-full h-full text-black px-4 py-2 rounded-md">
-          Presentation
+          Presentation*
           </div>
           <div className="bg-gray-200 w-full h-full text-black px-4 py-2 rounded-md">
             Bus Schedule
