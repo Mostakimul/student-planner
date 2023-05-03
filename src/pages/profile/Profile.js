@@ -34,8 +34,18 @@ const Profile = () => {
 
       {/* Buttons */}
       <div className="mt-5 flex space-y-2 flex-col">
-        <Button clikHandler={handleEditProfile}>Edit Profile</Button>
-        <Button clikHandler={handleChangePassword}>Change Password</Button>
+        <Button
+          classNames={"bg-yellow-600 py-2 px-4"}
+          clikHandler={handleEditProfile}
+        >
+          Edit Profile
+        </Button>
+        <Button
+          classNames={"bg-yellow-600 py-2 px-4"}
+          clikHandler={handleChangePassword}
+        >
+          Change Password
+        </Button>
       </div>
     </div>
   );
