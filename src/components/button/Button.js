@@ -1,10 +1,10 @@
 import React from "react";
 
-const Button = ({ children, clikHandler }) => {
+const Button = ({ children, clikHandler, classNames }) => {
   return (
     <button
       onClick={clikHandler}
-      className="bg-yellow-600 text-gray-200 rounded-md px-4 py-2"
+      className={`bg-yellow-600 text-gray-200 rounded-md ${classNames}`}
     >
       {children}
     </button>
