@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
 import TableRow from "../../components/tableRow/TableRow";
 
@@ -50,6 +52,12 @@ const Classes = () => {
             ))}
           </tbody>
         </table>
+
+        <div className="mt-5 flex justify-end">
+          <Link to={"/add-class"}>
+            <Button classNames={`px-4 py-1`}>Add Class</Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
