@@ -61,9 +61,10 @@ const AddExam = () => {
             <div>
               <input
                 name="date"
+                type="date"
                 {...register("date", { required: true })}
                 placeholder="Date"
-                className="px-3 py-1 rounded-md text-gray-900"
+                className="px-3 py-1 w-full rounded-md text-gray-900"
               />
               {errors.date?.type === "required" && (
                 <p role="alert" className="text-red-500">
