@@ -3,6 +3,7 @@ import MainLayout from "../layout/MainLayout";
 import AddAssignment from "../pages/addAssignment/AddAssignment";
 import AddBusSchedule from "../pages/addBusSchedule/AddBusSchedule";
 import AddClass from "../pages/addClass/AddClass";
+import AddExam from "../pages/addExam/AddExam";
 import AddPresentation from "../pages/addPresentation/AddPresentation";
 import Assignment from "../pages/assignment/Assignment";
 import BusSchedule from "../pages/busSchedule/BusSchedule";
@@ -93,6 +94,14 @@ export const routes = createBrowserRouter([
         element: (
           <PrivateRouter>
             <AddClass />
+          </PrivateRouter>
+        ),
+      },
+      {
+        path: "add-exam",
+        element: (
+          <PrivateRouter>
+            <AddExam />
           </PrivateRouter>
         ),
       },
