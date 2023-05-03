@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/button/Button";
+import ClassRow from "../../components/classRow/ClassRow";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
-import TableRow from "../../components/tableRow/TableRow";
 
 const dummyClass = [
   {
@@ -48,7 +48,7 @@ const Classes = () => {
           </thead>
           <tbody>
             {dummyClass.map((myClass) => (
-              <TableRow key={myClass.id} data={myClass} />
+              <ClassRow key={myClass.id} data={myClass} />
             ))}
           </tbody>
         </table>

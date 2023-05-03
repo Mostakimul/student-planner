@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "../button/Button";
 
-const TableRow = ({ data }) => {
+const ClassRow = ({ data }) => {
   const { id, subject, professor, schedule, room } = data;
 
   const editHandler = (id) => {
@@ -35,4 +35,4 @@ const TableRow = ({ data }) => {
   );
 };
 
-export default TableRow;
+export default ClassRow;
