@@ -137,6 +137,14 @@ export const routes = createBrowserRouter([
           </PrivateRouter>
         ),
       },
+      {
+        path: "edit-assignment/:id",
+        element: (
+          <PrivateRouter>
+            <AddAssignment />
+          </PrivateRouter>
+        ),
+      },
     ],
   },
 ]);

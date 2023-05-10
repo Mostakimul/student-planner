@@ -1,14 +1,18 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDeleteAssignmentMutation } from "../../features/assignments/assignmentApi";
 import Button from "../button/Button";
 
 const AssignmentRow = ({ data }) => {
-  const { id, title, subject, deadline } = data;
+  const { _id, title, subject, deadline } = data;
+  const [deleteAssignment] = useDeleteAssignmentMutation();
+  const navigate = useNavigate();
 
   const editHandler = (id) => {
-    console.log("Edit class ", id);
+    navigate(`/edit-assignment/${id}`);
   };
   const deleteClass = (id) => {
-    console.log("Delete class", id);
+    deleteAssignment(id);
   };
   return (
     <tr>
@@ -17,13 +21,13 @@ const AssignmentRow = ({ data }) => {
       <td className="border border-slate-600 p-1">{deadline}</td>
       <td className="border border-slate-600 p-1 space-x-3">
         <Button
-          clikHandler={() => editHandler(id)}
+          clikHandler={() => editHandler(_id)}
           classNames={"bg-blue-600 py-1 px-4"}
         >
           Edit
         </Button>
         <Button
-          clikHandler={() => deleteClass(id)}
+          clikHandler={() => deleteClass(_id)}
           classNames={"bg-red-600 py-1 px-4"}
         >
           Delete

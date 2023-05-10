@@ -1,23 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
+import {
+  useAddAssignmentMutation,
+  useGetAssignmentQuery,
+  useUpdateAssignmentMutation,
+} from "../../features/assignments/assignmentApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const AddAssignment = () => {
+  const { id } = useParams();
+  const { email } = useSelector(selectUser);
+  const navigate = useNavigate();
+  const [isIdAvailable, setIsIdAvailable] = useState(true);
+
+  // mutations
+  const { data: singleAssignment } = useGetAssignmentQuery(id, {
+    skip: isIdAvailable,
+  });
+  const [addAssignment, { isLoading }] = useAddAssignmentMutation();
+  const [updateAssignment] = useUpdateAssignmentMutation();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: {
       title: "",
       subject: "",
       deadline: "",
+      type: "",
     },
   });
 
+  useEffect(() => {
+    if (id) {
+      setIsIdAvailable(false);
+      setValue("title", singleAssignment?.title);
+      setValue("subject", singleAssignment?.subject);
+      setValue("deadline", singleAssignment?.deadline);
+      setValue("type", singleAssignment?.type);
+    }
+  }, [
+    id,
+    setValue,
+    singleAssignment?.deadline,
+    singleAssignment?.subject,
+    singleAssignment?.title,
+    singleAssignment?.type,
+  ]);
+
   const onSubmit = (data) => {
-    console.log("Data => ", data);
+    if (id) {
+      updateAssignment({ id: id, data: data });
+    } else {
+      addAssignment({
+        ...data,
+        email: email,
+      });
+    }
+    navigate("/assignments");
   };
   return (
     <div className="flex justify-center flex-col items-center">
@@ -71,26 +118,22 @@ const AddAssignment = () => {
             </div>
             <div>
               <input
-                name="room"
-                {...register("room", { required: true })}
-                placeholder="Room number"
+                name="type"
+                {...register("type", { required: true })}
+                placeholder="Type"
                 className="px-3 py-1 rounded-md text-gray-900"
               />
-              {errors.room?.type === "required" && (
+              {errors.type?.type === "required" && (
                 <p role="alert" className="text-red-500">
-                  Room number is required
+                  Type is required
                 </p>
               )}
             </div>
           </div>
 
           <div>
-            <Button
-              type="submit"
-              // disabled={isLoading || AisLoading}
-              classNames={"px-4 py-1"}
-            >
-              Add Class
+            <Button type="submit" disabled={isLoading} classNames={"px-4 py-1"}>
+              {id ? "Update Assignment" : "Add Assignment"}
             </Button>
           </div>
         </form>
