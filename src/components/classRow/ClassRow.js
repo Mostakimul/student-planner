@@ -1,13 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useDeleteClassMutation } from "../../features/classes/classApi";
 import Button from "../button/Button";
 
 const ClassRow = ({ data }) => {
   const { _id, subject, professor, schedule, room } = data;
   const [deleteClass] = useDeleteClassMutation();
+  const navigate = useNavigate();
 
   const editHandler = (id) => {
-    console.log("Edit class ", id);
+    navigate(`/edit-class/${id}`);
   };
   const handleDeleteClass = (id) => {
     deleteClass(id);

@@ -1,20 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
-import { useAddClassMutation } from "../../features/classes/classApi";
+import {
+  useAddClassMutation,
+  useGetClassQuery,
+  useUpdateClassMutation,
+} from "../../features/classes/classApi";
 import { selectUser } from "../../features/user/userSelectors";
 
 const AddClass = () => {
-  const [addClass, { isLoading }] = useAddClassMutation();
+  const { id } = useParams();
   const { email } = useSelector(selectUser);
   const navigate = useNavigate();
+  // const [isIdAvailable, setIsIdAvailable] = null;
+
+  // mutations
+  const { data: singleClass } = useGetClassQuery(id);
+  const [addClass, { isLoading }] = useAddClassMutation();
+  const [updateClass] = useUpdateClassMutation();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: {
       subject: "",
@@ -24,12 +36,33 @@ const AddClass = () => {
     },
   });
 
+  useEffect(() => {
+    if (id) {
+      // setIsIdAvailable(false);
+      setValue("subject", singleClass?.subject);
+      setValue("professor", singleClass?.professor);
+      setValue("schedule", singleClass?.schedule);
+      setValue("room", singleClass?.room);
+    }
+  }, [
+    id,
+    // setIsIdAvailable,
+    setValue,
+    singleClass?.professor,
+    singleClass?.room,
+    singleClass?.schedule,
+    singleClass?.subject,
+  ]);
+
   const onSubmit = (data) => {
-    console.log("Data => ", data);
-    addClass({
-      ...data,
-      email: email,
-    });
+    if (id) {
+      updateClass({ id: id, data: data });
+    } else {
+      addClass({
+        ...data,
+        email: email,
+      });
+    }
     navigate("/classes");
   };
   return (
@@ -98,7 +131,7 @@ const AddClass = () => {
 
           <div>
             <Button type="submit" disabled={isLoading} classNames={"px-4 py-1"}>
-              Add Class
+              {id ? "Update Class" : "Add Class"}
             </Button>
           </div>
         </form>

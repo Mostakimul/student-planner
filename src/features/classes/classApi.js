@@ -8,7 +8,14 @@ export const classApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Classes"],
+      invalidatesTags: ["Classe"],
+    }),
+    getClass: builder.query({
+      query: (id) => ({
+        url: `/class/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["Class"],
     }),
     getClasses: builder.query({
       query: (email) => ({
@@ -16,6 +23,17 @@ export const classApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Classes"],
+    }),
+    updateClass: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/class/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        "Classes",
+        { type: "Class", id: arg.id },
+      ],
     }),
     deleteClass: builder.mutation({
       query: (id) => ({
@@ -31,4 +49,6 @@ export const {
   useAddClassMutation,
   useGetClassesQuery,
   useDeleteClassMutation,
+  useUpdateClassMutation,
+  useGetClassQuery,
 } = classApi;
