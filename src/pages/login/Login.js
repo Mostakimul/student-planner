@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Logo from "../../assets/images/logo-big.png";
 import TextInput from "../../components/form/TextInput";
+import { useLoginUserMutation } from "../../features/user/useApi";
 import { selectUser } from "../../features/user/userSelectors";
-import { login } from "../../features/user/userSlice";
 import {
   auth,
   signInWithEmailAndPassword,
@@ -14,7 +14,8 @@ import {
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
-  const dispatch = useDispatch();
+  const [loginUser, { data, isLoading, error: responseError }] =
+    useLoginUserMutation();
   const user = useSelector(selectUser);
   const navigate = useNavigate();
 
@@ -27,13 +28,16 @@ const Login = () => {
   const onSubmit = (data) => {
     signInWithEmailAndPassword(auth, data.email, data.password)
       .then((userAuth) => {
-        dispatch(
-          login({
-            email: userAuth.user.email,
-            uid: userAuth.user.uid,
-            displayName: userAuth.user.displayName,
-          })
-        );
+        loginUser({
+          email: userAuth.user.email,
+        });
+        // dispatch(
+        //   login({
+        //     name: userAuth.user.name,
+        //     email: userAuth.user.email,
+        //     displayName: userAuth.user.displayName,
+        //   })
+        // );
       })
       .catch((err) => {
         toast.error("Login failed !");

@@ -5,7 +5,7 @@ import LogoutButton from "../../components/logoutButton/LogoutButton";
 import { selectUser } from "../../features/user/userSelectors";
 
 const Profile = () => {
-  const { displayName, email } = useSelector(selectUser);
+  const { name, email, university } = useSelector(selectUser);
 
   const handleEditProfile = () => {
     console.log("Edit profile cliked");
@@ -24,11 +24,15 @@ const Profile = () => {
         {/* field */}
         <div className="flex items-center ">
           <div className="bg-yellow-600 px-2 py-1 text-black">Name</div>
-          <p className="bg-white px-2 py-1 text-black w-full">{displayName}</p>
+          <p className="bg-white px-2 py-1 text-black w-full">{name}</p>
         </div>
         <div className="flex items-center mt-5">
           <div className="bg-yellow-600 px-2 py-1 text-black">Email</div>
           <p className="bg-white px-2 py-1 text-black w-full">{email}</p>
+        </div>
+        <div className="flex items-center mt-5">
+          <div className="bg-yellow-600 px-2 py-1 text-black">University</div>
+          <p className="bg-white px-2 py-1 text-black w-full">{university}</p>
         </div>
       </div>
 

@@ -1,21 +1,22 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Logo from "../../assets/images/logo-big.png";
 import TextInput from "../../components/form/TextInput";
+import { useRegisterUserMutation } from "../../features/user/useApi";
 import { selectUser } from "../../features/user/userSelectors";
-import { login } from "../../features/user/userSlice";
 import { auth } from "../../firebase/firebase.config";
 
 const Register = () => {
   const { register, handleSubmit } = useForm();
-  const dispatch = useDispatch();
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(selectUser);
+  const [registerUser, { data, isLoading, error: responseError }] =
+    useRegisterUserMutation();
 
   useEffect(() => {
     if (user?.email && !error) {
@@ -23,26 +24,33 @@ const Register = () => {
     }
   }, [error, navigate, user?.email]);
 
+  useEffect(() => {
+    if (responseError?.data) {
+      setError(responseError.data);
+    }
+    if (data?.user) {
+      navigate("/home");
+    }
+  }, [data, responseError, navigate]);
+
   const onSubmit = (data) => {
     setError(false);
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userAuth) => {
+        registerUser({
+          name: data.name,
+          email: userAuth.user.email,
+          university: data.university,
+          uid: userAuth.user.uid,
+          // accessToken: userAuth.user.accessToken,
+        });
+
         updateProfile(userAuth.user, {
           displayName: data.name,
-        })
-          .then(
-            dispatch(
-              login({
-                email: userAuth.user.email,
-                uid: userAuth.user.uid,
-                displayName: data.name,
-              })
-            )
-          )
-          .catch((error) => {
-            setError(true);
-            toast.error("User not updated !");
-          });
+        }).catch((error) => {
+          setError(true);
+          toast.error("User not updated !");
+        });
       })
       .catch((error) => {
         setError(true);
@@ -92,6 +100,7 @@ const Register = () => {
 
           <button
             type="submit"
+            disabled={isLoading}
             className="bg-yellow-500 text-gray-900 px-5 py-2 rounded-md"
           >
             Create Account
