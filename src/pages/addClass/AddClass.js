@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,10 +15,12 @@ const AddClass = () => {
   const { id } = useParams();
   const { email } = useSelector(selectUser);
   const navigate = useNavigate();
-  // const [isIdAvailable, setIsIdAvailable] = null;
+  const [isIdAvailable, setIsIdAvailable] = useState(true);
 
   // mutations
-  const { data: singleClass } = useGetClassQuery(id);
+  const { data: singleClass } = useGetClassQuery(id, {
+    skip: isIdAvailable,
+  });
   const [addClass, { isLoading }] = useAddClassMutation();
   const [updateClass] = useUpdateClassMutation();
 
@@ -38,7 +40,7 @@ const AddClass = () => {
 
   useEffect(() => {
     if (id) {
-      // setIsIdAvailable(false);
+      setIsIdAvailable(false);
       setValue("subject", singleClass?.subject);
       setValue("professor", singleClass?.professor);
       setValue("schedule", singleClass?.schedule);
@@ -46,7 +48,6 @@ const AddClass = () => {
     }
   }, [
     id,
-    // setIsIdAvailable,
     setValue,
     singleClass?.professor,
     singleClass?.room,
