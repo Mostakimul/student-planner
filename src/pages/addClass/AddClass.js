@@ -1,9 +1,16 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
+import { useAddClassMutation } from "../../features/classes/classApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const AddClass = () => {
+  const [addClass, { isLoading }] = useAddClassMutation();
+  const { email } = useSelector(selectUser);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -19,6 +26,11 @@ const AddClass = () => {
 
   const onSubmit = (data) => {
     console.log("Data => ", data);
+    addClass({
+      ...data,
+      email: email,
+    });
+    navigate("/classes");
   };
   return (
     <div className="flex justify-center flex-col items-center">
@@ -85,11 +97,7 @@ const AddClass = () => {
           </div>
 
           <div>
-            <Button
-              type="submit"
-              // disabled={isLoading || AisLoading}
-              classNames={"px-4 py-1"}
-            >
+            <Button type="submit" disabled={isLoading} classNames={"px-4 py-1"}>
               Add Class
             </Button>
           </div>

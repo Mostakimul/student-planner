@@ -1,8 +1,12 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Button from "../../components/button/Button";
 import ClassRow from "../../components/classRow/ClassRow";
+import Error from "../../components/error/Error";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
+import { useGetClassesQuery } from "../../features/classes/classApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const dummyClass = [
   {
@@ -29,6 +33,44 @@ const dummyClass = [
 ];
 
 const Classes = () => {
+  const { email } = useSelector(selectUser);
+  const {
+    data: classes,
+    isError,
+    isLoading,
+    error,
+  } = useGetClassesQuery(email);
+
+  console.log("Classes: ", classes);
+
+  let content = null;
+
+  if (isLoading) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">Loading...</td>
+      </tr>
+    );
+  } else if (!isLoading && isError) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">
+          <Error message={error?.data} />
+        </td>
+      </tr>
+    );
+  } else if (!isLoading && !isError && classes?.length === 0) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">No class found!</td>
+      </tr>
+    );
+  } else if (!isLoading && !isError && classes?.length > 0) {
+    content = classes.map((myClass) => (
+      <ClassRow key={myClass._id} data={myClass} />
+    ));
+  }
+
   return (
     <div className="flex justify-center flex-col items-center">
       <LogoutButton />
@@ -47,9 +89,10 @@ const Classes = () => {
             </tr>
           </thead>
           <tbody>
-            {dummyClass.map((myClass) => (
+            {/* {dummyClass.map((myClass) => (
               <ClassRow key={myClass.id} data={myClass} />
-            ))}
+            ))} */}
+            {content}
           </tbody>
         </table>
 
