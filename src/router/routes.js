@@ -114,6 +114,14 @@ export const routes = createBrowserRouter([
         ),
       },
       {
+        path: "edit-exam/:id",
+        element: (
+          <PrivateRouter>
+            <AddExam />
+          </PrivateRouter>
+        ),
+      },
+      {
         path: "add-bus-schedule",
         element: (
           <PrivateRouter>

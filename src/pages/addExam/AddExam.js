@@ -1,13 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
+import {
+  useAddExamMutation,
+  useGetExamQuery,
+  useUpdateExamMutation,
+} from "../../features/exams/examApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const AddExam = () => {
+  const { id } = useParams();
+  const { email } = useSelector(selectUser);
+  const navigate = useNavigate();
+  const [isIdAvailable, setIsIdAvailable] = useState(true);
+
+  // mutations
+  const { data: singleExam } = useGetExamQuery(id, {
+    skip: isIdAvailable,
+  });
+  const [addExam, { isLoading }] = useAddExamMutation();
+  const [updateExam] = useUpdateExamMutation();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: {
       subject: "",
@@ -18,8 +39,35 @@ const AddExam = () => {
     },
   });
 
+  useEffect(() => {
+    if (id) {
+      setIsIdAvailable(false);
+      setValue("subject", singleExam?.subject);
+      setValue("type", singleExam?.type);
+      setValue("date", singleExam?.date);
+      setValue("room", singleExam?.room);
+      setValue("method", singleExam?.method);
+    }
+  }, [
+    id,
+    setValue,
+    singleExam?.date,
+    singleExam?.method,
+    singleExam?.room,
+    singleExam?.subject,
+    singleExam?.type,
+  ]);
+
   const onSubmit = (data) => {
-    console.log("Data => ", data);
+    if (id) {
+      updateExam({ id: id, data: data });
+    } else {
+      addExam({
+        ...data,
+        email: email,
+      });
+    }
+    navigate("/exams");
   };
 
   return (
@@ -101,12 +149,8 @@ const AddExam = () => {
           </div>
 
           <div>
-            <Button
-              type="submit"
-              // disabled={isLoading || AisLoading}
-              classNames={"px-4 py-1"}
-            >
-              Add Exam
+            <Button type="submit" disabled={isLoading} classNames={"px-4 py-1"}>
+              {id ? "Update Exam" : "Add Exam"}
             </Button>
           </div>
         </form>

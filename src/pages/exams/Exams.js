@@ -1,38 +1,44 @@
-import moment from "moment/moment";
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Button from "../../components/button/Button";
+import Error from "../../components/error/Error";
 import ExamRow from "../../components/examRow/ExamRow";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
-
-const dummyExams = [
-  {
-    id: "1",
-    subject: "ENMG 652",
-    type: "Final Exam",
-    date: moment().add(1, "days").format("MMMM Do YYYY"),
-    room: "412",
-    method: "Online",
-  },
-  {
-    id: "2",
-    subject: "SENG 645",
-    type: "Final Exam",
-    date: moment().add(5, "days").format("MMMM Do YYYY"),
-    room: "422",
-    method: "Offline",
-  },
-  {
-    id: "3",
-    subject: "SENG 638",
-    type: "Final Exam",
-    date: moment().add(10, "days").format("MMMM Do YYYY"),
-    room: "432",
-    method: "Offline",
-  },
-];
+import { useGetExamsQuery } from "../../features/exams/examApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const Exams = () => {
+  const { email } = useSelector(selectUser);
+
+  const { data: exams, isError, isLoading, error } = useGetExamsQuery(email);
+
+  let content = null;
+
+  if (isLoading) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">Loading...</td>
+      </tr>
+    );
+  } else if (!isLoading && isError) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">
+          <Error message={error?.data} />
+        </td>
+      </tr>
+    );
+  } else if (!isLoading && !isError && exams?.length === 0) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">No exams found!</td>
+      </tr>
+    );
+  } else if (!isLoading && !isError && exams?.length > 0) {
+    content = exams.map((exam) => <ExamRow key={exam._id} data={exam} />);
+  }
+
   return (
     <div className="flex justify-center flex-col items-center">
       <LogoutButton />
@@ -51,11 +57,7 @@ const Exams = () => {
               <th className="border border-slate-600 p-1">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {dummyExams.map((exam) => (
-              <ExamRow key={exam.id} data={exam} />
-            ))}
-          </tbody>
+          <tbody>{content}</tbody>
         </table>
 
         <div className="mt-5 flex justify-end">
