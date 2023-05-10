@@ -90,6 +90,14 @@ export const routes = createBrowserRouter([
         ),
       },
       {
+        path: "edit-presentation/:id",
+        element: (
+          <PrivateRouter>
+            <AddPresentation />
+          </PrivateRouter>
+        ),
+      },
+      {
         path: "add-class",
         element: (
           <PrivateRouter>

@@ -1,9 +1,13 @@
 import moment from "moment";
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Button from "../../components/button/Button";
+import Error from "../../components/error/Error";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
 import PresentationRow from "../../components/presentationRow/PresentationRow";
+import { useGetPresentationsQuery } from "../../features/presentations/presentationApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const dummyPresentation = [
   {
@@ -30,6 +34,42 @@ const dummyPresentation = [
 ];
 
 const Presentations = () => {
+  const { email } = useSelector(selectUser);
+
+  const {
+    data: presentations,
+    isError,
+    isLoading,
+    error,
+  } = useGetPresentationsQuery(email);
+
+  let content = null;
+
+  if (isLoading) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">Loading...</td>
+      </tr>
+    );
+  } else if (!isLoading && isError) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">
+          <Error message={error?.data} />
+        </td>
+      </tr>
+    );
+  } else if (!isLoading && !isError && presentations?.length === 0) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">No presentations found!</td>
+      </tr>
+    );
+  } else if (!isLoading && !isError && presentations?.length > 0) {
+    content = presentations.map((presentations) => (
+      <PresentationRow key={presentations._id} data={presentations} />
+    ));
+  }
   return (
     <div className="flex justify-center flex-col items-center">
       <LogoutButton />
@@ -47,11 +87,7 @@ const Presentations = () => {
               <th className="border border-slate-600 p-1">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {dummyPresentation.map((presentation) => (
-              <PresentationRow key={presentation.id} data={presentation} />
-            ))}
-          </tbody>
+          <tbody>{content}</tbody>
         </table>
 
         <div className="mt-5 flex justify-end">

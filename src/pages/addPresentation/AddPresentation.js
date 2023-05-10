@@ -1,13 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
+import {
+  useAddPresentationMutation,
+  useGetPresentationQuery,
+  useUpdatePresentationMutation,
+} from "../../features/presentations/presentationApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const AddPresentation = () => {
+  const { id } = useParams();
+  const { email } = useSelector(selectUser);
+  const navigate = useNavigate();
+  const [isIdAvailable, setIsIdAvailable] = useState(true);
+
+  // mutations
+  const { data: singlePresentation } = useGetPresentationQuery(id, {
+    skip: isIdAvailable,
+  });
+  const [addPresentation, { isLoading }] = useAddPresentationMutation();
+  const [updatedPresentation] = useUpdatePresentationMutation();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: {
       title: "",
@@ -17,8 +38,33 @@ const AddPresentation = () => {
     },
   });
 
+  useEffect(() => {
+    if (id) {
+      setIsIdAvailable(false);
+      setValue("title", singlePresentation?.title);
+      setValue("subject", singlePresentation?.subject);
+      setValue("deadline", singlePresentation?.deadline);
+      setValue("method", singlePresentation?.method);
+    }
+  }, [
+    id,
+    setValue,
+    singlePresentation?.deadline,
+    singlePresentation?.method,
+    singlePresentation?.subject,
+    singlePresentation?.title,
+  ]);
+
   const onSubmit = (data) => {
-    console.log("Data => ", data);
+    if (id) {
+      updatedPresentation({ id: id, data: data });
+    } else {
+      addPresentation({
+        ...data,
+        email: email,
+      });
+    }
+    navigate("/presentation");
   };
   return (
     <div className="flex justify-center flex-col items-center">
@@ -91,7 +137,7 @@ const AddPresentation = () => {
               // disabled={isLoading || AisLoading}
               classNames={"px-4 py-1"}
             >
-              Add Class
+              {id ? "Update Presentation" : "Add Presentation"}
             </Button>
           </div>
         </form>

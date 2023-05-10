@@ -5,6 +5,15 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.REACT_APP_API_URL,
   }),
-  tagTypes: ["Classes", "Class", "Exams", "Exam", "Assignments", "Assignment"],
+  tagTypes: [
+    "Classes",
+    "Class",
+    "Exams",
+    "Exam",
+    "Assignments",
+    "Assignment",
+    "Presentations",
+    "Presentation",
+  ],
   endpoints: (builder) => ({}),
 });
