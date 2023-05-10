@@ -8,30 +8,6 @@ import LogoutButton from "../../components/logoutButton/LogoutButton";
 import { useGetClassesQuery } from "../../features/classes/classApi";
 import { selectUser } from "../../features/user/userSelectors";
 
-const dummyClass = [
-  {
-    id: "1",
-    subject: "ENMG 652",
-    professor: "Chris Hauge",
-    schedule: "7:00 pm to 9:30 pm",
-    room: "412",
-  },
-  {
-    id: "2",
-    subject: "SENG 638",
-    professor: "Dr. Mohammad Samarah",
-    schedule: "4:30 pm to 7:00 pm",
-    room: "422",
-  },
-  {
-    id: "3",
-    subject: "SENG 645",
-    professor: "Dr. Mohammad Samarah",
-    schedule: "4:30 pm to 7:00 pm",
-    room: "421",
-  },
-];
-
 const Classes = () => {
   const { email } = useSelector(selectUser);
 
@@ -41,8 +17,6 @@ const Classes = () => {
     isLoading,
     error,
   } = useGetClassesQuery(email);
-
-  console.log("Classes: ", classes);
 
   let content = null;
 

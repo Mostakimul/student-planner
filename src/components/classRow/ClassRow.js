@@ -10,7 +10,6 @@ const ClassRow = ({ data }) => {
     console.log("Edit class ", id);
   };
   const handleDeleteClass = (id) => {
-    console.log(id);
     deleteClass(id);
   };
 
