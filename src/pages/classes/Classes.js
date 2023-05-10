@@ -34,6 +34,7 @@ const dummyClass = [
 
 const Classes = () => {
   const { email } = useSelector(selectUser);
+
   const {
     data: classes,
     isError,
@@ -88,12 +89,7 @@ const Classes = () => {
               <th className="border border-slate-600 p-1">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {/* {dummyClass.map((myClass) => (
-              <ClassRow key={myClass.id} data={myClass} />
-            ))} */}
-            {content}
-          </tbody>
+          <tbody>{content}</tbody>
         </table>
 
         <div className="mt-5 flex justify-end">

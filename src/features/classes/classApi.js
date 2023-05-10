@@ -17,7 +17,18 @@ export const classApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["Classes"],
     }),
+    deleteClass: builder.mutation({
+      query: (id) => ({
+        url: `/class/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Classes"],
+    }),
   }),
 });
 
-export const { useAddClassMutation, useGetClassesQuery } = classApi;
+export const {
+  useAddClassMutation,
+  useGetClassesQuery,
+  useDeleteClassMutation,
+} = classApi;
