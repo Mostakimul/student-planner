@@ -1,13 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../features/user/userSelectors";
+import {
+  useAddBusScheduleMutation,
+  useGetBusScheduleQuery,
+  useUpdateBusScheduleMutation,
+} from "../../features/busSchedule/busScheduleApi";
 
 const AddBusSchedule = () => {
+  const { id } = useParams();
+  console.log("Id", id);
+  const { email } = useSelector(selectUser);
+  const navigate = useNavigate();
+  const [isIdAvailable, setIsIdAvailable] = useState(true);
+
+  // mutations
+  const { data: singleBusSchedule } = useGetBusScheduleQuery(id, {
+    skip: isIdAvailable,
+  });
+  console.log("single Class", singleBusSchedule);
+  const [addBusSchedule, { isLoading }] = useAddBusScheduleMutation();
+  const [updateBusSchedule] = useUpdateBusScheduleMutation();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: {
       route: "",
@@ -16,8 +39,31 @@ const AddBusSchedule = () => {
     },
   });
 
+  useEffect(() => {
+    if (id) {
+      setIsIdAvailable(false);
+      setValue("route", singleBusSchedule?.route);
+      setValue("departureTime", singleBusSchedule?.departureTime);
+      setValue("notify", singleBusSchedule?.notify);
+    }
+  }, [
+    id,
+    setValue,
+    singleBusSchedule?.route,
+    singleBusSchedule?.departureTime,
+    singleBusSchedule?.notify,
+  ]);
+
   const onSubmit = (data) => {
-    console.log("Data => ", data);
+    if (id) {
+      updateBusSchedule({ id: id, data: data });
+    } else {
+      addBusSchedule({
+        ...data,
+        email: email,
+      });
+    }
+    navigate("/bus-schedule");
   };
   return (
     <div className="flex justify-center flex-col items-center">
@@ -68,12 +114,8 @@ const AddBusSchedule = () => {
           </div>
 
           <div>
-            <Button
-              type="submit"
-              // disabled={isLoading || AisLoading}
-              classNames={"px-4 py-1"}
-            >
-              Add Class
+            <Button type="submit" disabled={isLoading} classNames={"px-4 py-1"}>
+              {id ? "Update Class" : "Add Class"}
             </Button>
           </div>
         </form>

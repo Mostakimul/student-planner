@@ -138,6 +138,14 @@ export const routes = createBrowserRouter([
         ),
       },
       {
+        path: "edit-bus-schedule/:id",
+        element: (
+          <PrivateRouter>
+            <AddBusSchedule />
+          </PrivateRouter>
+        ),
+      },
+      {
         path: "add-assignment",
         element: (
           <PrivateRouter>

@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 import BusScheduleRow from "../../components/busScheduleRow/BusScheduleRow";
 import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../features/user/userSelectors";
+import { useGetBusSchedulesQuery } from "../../features/busSchedule/busScheduleApi";
+import Error from "../../components/error/Error";
 
 const dummyBusSchedule = [
   {
@@ -21,6 +25,42 @@ const dummyBusSchedule = [
 ];
 
 const BusSchedule = () => {
+  const { email } = useSelector(selectUser);
+
+  const {
+    data: busSchedules,
+    isError,
+    isLoading,
+    error,
+  } = useGetBusSchedulesQuery(email);
+
+  let content = null;
+
+  if (isLoading) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">Loading...</td>
+      </tr>
+    );
+  } else if (!isLoading && isError) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">
+          <Error message={error?.data} />
+        </td>
+      </tr>
+    );
+  } else if (!isLoading && !isError && busSchedules?.length === 0) {
+    content = (
+      <tr>
+        <td className="m-2 text-center">No Bus Schedule found!</td>
+      </tr>
+    );
+  } else if (!isLoading && !isError && busSchedules?.length > 0) {
+    content = busSchedules.map((mySchedule) => (
+      <BusScheduleRow key={mySchedule._id} data={mySchedule} />
+    ));
+  }
   return (
     <div className="flex justify-center flex-col items-center">
       <LogoutButton />
@@ -37,11 +77,7 @@ const BusSchedule = () => {
               <th className="border border-slate-600 p-1">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {dummyBusSchedule.map((bus) => (
-              <BusScheduleRow key={bus.id} data={bus} />
-            ))}
-          </tbody>
+          <tbody>{content}</tbody>
         </table>
 
         <div className="mt-5 flex justify-end">
