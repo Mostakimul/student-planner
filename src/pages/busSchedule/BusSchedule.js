@@ -1,28 +1,12 @@
-import moment from "moment";
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import BusScheduleRow from "../../components/busScheduleRow/BusScheduleRow";
 import Button from "../../components/button/Button";
-import LogoutButton from "../../components/logoutButton/LogoutButton";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../features/user/userSelectors";
-import { useGetBusSchedulesQuery } from "../../features/busSchedule/busScheduleApi";
 import Error from "../../components/error/Error";
-
-const dummyBusSchedule = [
-  {
-    id: "1",
-    route: "sample route",
-    departureTime: moment().add(3, "days").calendar(),
-    notifyMe: true,
-  },
-  {
-    id: "2",
-    route: "sample route 2",
-    departureTime: moment().add(3, "days").calendar(),
-    notifyMe: false,
-  },
-];
+import LogoutButton from "../../components/logoutButton/LogoutButton";
+import { useGetBusSchedulesQuery } from "../../features/busSchedule/busScheduleApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const BusSchedule = () => {
   const { email } = useSelector(selectUser);

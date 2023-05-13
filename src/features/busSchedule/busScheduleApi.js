@@ -19,7 +19,7 @@ export const busScheduleApi = apiSlice.injectEndpoints({
     }),
     getBusSchedules: builder.query({
       query: (email) => ({
-        url: `/busSchedule/${email}`,
+        url: `/busSchedules/${email}`,
         method: "GET",
       }),
       providesTags: ["BusSchedules"],

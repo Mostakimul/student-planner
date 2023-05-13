@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/button/Button";
 import LogoutButton from "../../components/logoutButton/LogoutButton";
-import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../features/user/userSelectors";
 import {
   useAddBusScheduleMutation,
   useGetBusScheduleQuery,
   useUpdateBusScheduleMutation,
 } from "../../features/busSchedule/busScheduleApi";
+import { selectUser } from "../../features/user/userSelectors";
 
 const AddBusSchedule = () => {
   const { id } = useParams();
-  console.log("Id", id);
   const { email } = useSelector(selectUser);
   const navigate = useNavigate();
   const [isIdAvailable, setIsIdAvailable] = useState(true);
@@ -22,7 +21,6 @@ const AddBusSchedule = () => {
   const { data: singleBusSchedule } = useGetBusScheduleQuery(id, {
     skip: isIdAvailable,
   });
-  console.log("single Class", singleBusSchedule);
   const [addBusSchedule, { isLoading }] = useAddBusScheduleMutation();
   const [updateBusSchedule] = useUpdateBusScheduleMutation();
 
@@ -49,9 +47,9 @@ const AddBusSchedule = () => {
   }, [
     id,
     setValue,
-    singleBusSchedule?.route,
     singleBusSchedule?.departureTime,
     singleBusSchedule?.notify,
+    singleBusSchedule?.route,
   ]);
 
   const onSubmit = (data) => {
@@ -115,7 +113,7 @@ const AddBusSchedule = () => {
 
           <div>
             <Button type="submit" disabled={isLoading} classNames={"px-4 py-1"}>
-              {id ? "Update Class" : "Add Class"}
+              {id ? "Update Bus Schedule" : "Add Bus Schedule"}
             </Button>
           </div>
         </form>

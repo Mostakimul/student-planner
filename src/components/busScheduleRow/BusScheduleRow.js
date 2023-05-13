@@ -1,11 +1,11 @@
 import React from "react";
 import { FcCancel, FcCheckmark } from "react-icons/fc";
-import Button from "../button/Button";
-import { useDeleteBusScheduleMutation } from "../../features/busSchedule/busScheduleApi";
 import { useNavigate } from "react-router-dom";
+import { useDeleteBusScheduleMutation } from "../../features/busSchedule/busScheduleApi";
+import Button from "../button/Button";
 
 const BusScheduleRow = ({ data }) => {
-  const { id, route, departureTime, notifyMe } = data;
+  const { _id, route, departureTime, notifyMe } = data;
   const [deleteBusSchedule] = useDeleteBusScheduleMutation();
   const navigate = useNavigate();
 
@@ -24,13 +24,13 @@ const BusScheduleRow = ({ data }) => {
       </td>
       <td className="border border-slate-600 p-1 space-x-3">
         <Button
-          clikHandler={() => editHandler(id)}
+          clikHandler={() => editHandler(_id)}
           classNames={"bg-blue-600 py-1 px-4"}
         >
           Edit
         </Button>
         <Button
-          clikHandler={() => deleteHandler(id)}
+          clikHandler={() => deleteHandler(_id)}
           classNames={"bg-red-600 py-1 px-4"}
         >
           Delete
